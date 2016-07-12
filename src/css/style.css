@@ -1,0 +1,102 @@
+.tab,
+dl {
+    float: left
+}
+.mainHeader,
+.tab {
+    text-align: center
+}
+.myName,
+.userId,
+dt {
+    font-weight: 700
+}
+dd,
+div,
+footer,
+header,
+nav,
+section,
+ul {
+    margin: 0;
+    padding: 0
+}
+li {
+    list-style: none
+}
+dt {
+    font-size: 1.2em;
+    margin-bottom: 5px
+}
+dl {
+    width: 75%
+}
+dd {
+    font-size: .9em
+}
+.mainHeader {
+    height: 200px;
+    padding-top: 20px;
+    line-height: 1.4em
+}
+.userId {
+    font-size: 1.2em
+}
+.userMessage,
+.userSNSInfo {
+    font-size: .8em;
+    color: gray
+}
+.userSNSInfo {
+    overflow: auto;
+    width: 255px;
+    margin: 0 auto
+}
+.userSNSInfo>li {
+    float: left;
+    margin-right: 5px;
+    width: 80px
+}
+.userSNSInfo span.count {
+    color: #1FB820
+}
+.mainView>nav {
+    height: 40px;
+    margin-top: 10px;
+    overflow: auto;
+    border-bottom: 1px solid #e4e4e4;
+    border-top: 1px solid #e4e4e4
+}
+.tab {
+    border-right: 1px solid #e4e4e4;
+    height: 100%;
+    line-height: 40px;
+    width: 24.5%;
+    cursor: pointer
+}
+.tab:last-child {
+    border-right: 0
+}
+.mainView>section {
+    display: none;
+    padding: 8%;
+    line-height: 1.5em
+}
+.mainView>section.selectedContent{
+    display: block;
+    padding: 8%;
+    line-height: 1.5em
+}
+.myName {
+    font-size: 1.2em
+}
+.myDesc {
+    font-size: .8em
+}
+.selectedContent li {
+    margin-bottom: 8%
+}
+.selectedTab {
+    background-color: #DF9274;
+    color: #fff
+}

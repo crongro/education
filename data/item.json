@@ -1,0 +1,20 @@
+[
+  {
+    "id": 138,
+    "title": "양념이 잘 버무려진 감자칩",
+    "price": 12000,
+    "newItem": false
+  },
+  {
+    "id": 139,
+    "title": "무지막지 저렴한 순대국",
+    "price": 8900,
+    "newItem": false
+  },
+  {
+    "id": 38,
+    "title": "계란이 유난히 큰 수제 버거",
+    "price": 39000,
+    "newItem": false
+  }
+]
