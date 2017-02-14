@@ -243,6 +243,39 @@ app.post('/ajax_send_email', function(req,res,next) {
 })
 ```
 
+#### MYSQL 연동 - db접속해서 데이터 확인.
+```shell
+mysql -u root -p
+use jsman;
+show tables;
+select * from user;
+```
+
+#### mysql node 모듈 설치.
+```shell
+npm install mysql --save
+```
+
+#### express 에서  mysql 사용법 검색
+``` javascript
+var mysql = require('mysql')
+var connection = mysql.createConnection({
+  host: 'localhost',
+  port:3306,
+  user: 'root',
+  password: 'asdf1234',
+  database:'jsman'
+})
+connection.connect()
+
+var query = connection.query('select * from user',function(err,rows){
+        console.log(rows[0].EMAIL);
+});
+
+```
+
+
+
 #참고 : 
 https://expressjs.com/en/starter/installing.html
 여기서 Getting started -> Guide 항목 살펴보기.
