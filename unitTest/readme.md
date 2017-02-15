@@ -79,7 +79,7 @@ describe('equal', function() {
 브라우저에서 확인 : /test/main.test.html
 
 #### 8. array 를 테스트하는 함수 하나 만들어보기
-
+```javascript
 describe('array test', function() {
   it('equal dummy test', function() {
   	var arr = [];
@@ -87,6 +87,7 @@ describe('array test', function() {
     assert.equal(arr.length, 1);
   });
 })
+```
 
 #### 9. 실제 서비스에서 사용한 함수를 하나 테스트해보자!
 아래의 예제처럼..
