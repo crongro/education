@@ -36,6 +36,7 @@ assert.equal(true, false);
 #### 5. Mocha, chai 설치
 
 ```shell
+	mkdir mytest
 	npm init
 	npm install mocha --save-dev
 	npm install chai --save-dev
