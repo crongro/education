@@ -243,20 +243,21 @@ app.post('/ajax_send_email', function(req,res,next) {
 })
 ```
 
-#### MYSQL 연동 - db접속해서 데이터 확인.
+#### 39.  MYSQL 연동 - db접속해서 데이터 추가.
 ```shell
 mysql -u root -p
 use jsman;
 show tables;
 select * from user;
+insert into user (email, name, pw) values ('master@cs.com', 'jisu', '1234asdf');
 ```
 
-#### mysql node 모듈 설치.
+#### 40. mysql node 모듈 설치.
 ```shell
 npm install mysql --save
 ```
 
-#### express 에서  mysql 사용법 검색
+#### 41. express 에서  mysql 연결 설정
 ``` javascript
 var mysql = require('mysql')
 var connection = mysql.createConnection({
@@ -268,10 +269,28 @@ var connection = mysql.createConnection({
 })
 connection.connect()
 
-var query = connection.query('select * from user',function(err,rows){
-        console.log(rows[0].EMAIL);
-});
+```
 
+#### 42. query 날리고 json응답하기
+
+```javascript
+app.post('/ajax_send_email', function(req, res){
+  var email = req.body.email;
+  var responseData = {};
+
+  var query = connection.query('select name from user where email="' + email + '"', function(err, rows) {
+    if(err) throw err;
+    if(rows[0]) {
+      console.log(rows);
+      responseData.result = "ok";
+      responseData.name= rows[0].name;
+    } else {
+      responseData.result = "none";
+      responseData.name= "";
+    }
+    res.json(responseData)
+  })
+})
 ```
 
 
