@@ -293,6 +293,35 @@ app.post('/ajax_send_email', function(req, res){
 })
 ```
 
+#### 43. router 부분을 모듈화하기.
+//app.js 에서 module을 불러오는 방법
+var main = require('./router/main')
+app.use("/main", main)
+
+//기존 라이팅코드를 주석 처리하기.
+/*
+app.get('/main', function(req,res) {
+res.sendFile(__dirname + '/public/main.html')
+});
+*/
+
+#### 44. router/main.js 에서 router 정의하기.
+필요한 모듈을 설치하고 module.exports 하기
+```javascript
+var express = require('express')
+var app = express()
+var router = express.Router()
+var path = require('path')
+
+router.get('/', function(req,res) {
+  console.log("here");
+  res.sendFile(path.join(__dirname , '../public/main.html'))
+});
+
+module.exports = router;
+``` 
+
+
 
 
 #참고 : 
