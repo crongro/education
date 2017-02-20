@@ -76,7 +76,7 @@ this를 내가 원하는 것으로 변경해주는 녀석.
    obj.code()
 ```
 
-**#bind 메서드를 활용해 해결가능.**
+**#bind 메서드를 활용해 해결가능**
 
 ```javascript
     var obj = {
