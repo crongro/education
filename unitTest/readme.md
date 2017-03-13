@@ -2,10 +2,14 @@
 ####  1.code test
 자바스크립트 코드가 잘 동작되는지를 테스트 하는 것.
 
+---
+
 ####  2.unit test
 자바스크립트 최소단위(함수)를 테스트 하는 것.
 
 사람이 직접 함수를 호출하는 것이 아니고, 프로그램을 통해서 자동으로 동작을 확인.
+
+---
 
 #### 3.unit test 구현방법
 service.js 라는 파일을 만들었을때, 그 안에 구현한 함수를 프로그램을 통해 실행하고, 
@@ -21,6 +25,7 @@ function print(arg) {
 print('ok'); //'result ok' 가 나와야 print함수가 잘 동작한다고 판단.
 print('no!'); //'result ok' 가 나오면 안되고, 다른 결과가 나와야 정상이라고 판단.
 ```
+---
 
 #### 4. javascript unit test 라이브러리
 Qunit, Mocha 와 같은 테스트 프레임워크를 사용해서 테스트 코드를 구현.
@@ -32,6 +37,8 @@ assert.equal(true, false);
 ```
 
 : http://chaijs.com/api/assert/
+
+---
 
 #### 5. Mocha, chai 설치
 
