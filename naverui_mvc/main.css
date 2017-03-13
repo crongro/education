@@ -1,0 +1,91 @@
+
+div,header,ul,li,section,nav,footer,h1,h2,h3,h4 {margin:0;padding:0;}
+li { list-style: none; }
+a { text-decoration: none;}
+
+header,.mainArea > nav, .mainArea > .content, .newsList > ul{
+	padding:10px;
+	border: 1px solid #cccaca;
+}
+
+.wrap{
+	width:800px;
+	margin: 150px auto 0px;
+}
+
+.wrap,nav,.content {
+	height: 200px;
+}
+
+header {
+	overflow: auto;
+	border-bottom: 0;
+}
+
+header > ul{
+	float:left;
+}
+
+header > ul > li {
+	display: inline-block;
+}
+
+header > .btn {
+	float: right;
+	font-size: 1.2rem;
+}
+
+.left, .right {
+	display: inline-block;
+}
+
+.left {
+	margin-right: 10px;
+}
+
+.mainArea {
+	clear:both;
+	overflow: auto;
+}
+
+nav, .content , .newsList > ul{
+	float: left;
+	box-sizing: border-box;
+}
+
+nav {
+	width:200px;
+	border-right: 0;
+}
+
+.content {
+	width:600px;
+	overflow: auto;
+}
+
+.content > h4 {
+	height: 26px;
+}
+
+.newsList > img, .newsList > ul{
+	float: left;
+}
+
+.newsList > img {
+	width : 30%;
+}
+
+.newsList > ul {
+	margin-left:2%;
+	width : 68%;
+}
+	
+.newsList > img, .newsList > ul  {
+	height: 150px;
+}
+
+.newsList ul li {
+	  text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+}

@@ -1,0 +1,23 @@
+[
+	{
+		"title" : "sbs",
+		"imgurl" : "http://static.naver.net/newsstand/2017/0313/article_img/9054/173200/001.jpg",
+		"newslist" : [
+				"[가보니] 가상 경주도 즐기고, 내 손으로 자동차도 만들고",
+				"리캡차'가 사라진다",
+				"갤럭시S8' 출시? '갤노트7' 처리 계획부터 밝혀야",
+				"블로코-삼성SDS, 블록체인 사업 '맞손",
+				"[블록체인 톺아보기] 퍼블릭 블록체인의 한계와 프라이빗 블록체인" 
+		]
+	},
+	{
+		"title" : "mbc",
+		"imgurl" : "http://static.naver.net/newsstand/2017/0313/article_img/9054/173200/001.jpg",
+		"newslist" : [
+				"Lorem ipsum dolor sit amet, consectetur adipisicin",
+				"ipsum dolor sit amet, consectetur adipisicin",
+				"dolor sit amet, consectetur adipisicin",
+				"amet, consectetur adipisicin"
+		]
+	}
+]

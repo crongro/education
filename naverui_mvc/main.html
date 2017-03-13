@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>news</title>
+        <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+
+    <div class="wrap">
+    	<header>
+    		<ul>
+    			<li>전체언론사</li>
+    			<li>my뉴스</li>
+    		</ul>
+    		<div class="btn">
+    			<div class="left"><a href="#"><</a></div>
+    			<div class="right"><a href="#">></a></div>
+    		</div>
+    	</header>
+    	<section class="mainArea">
+    		<nav>
+    			<ul>
+    			</ul>
+    		</nav>
+    		<section class="content">
+    		</section>
+    	</section>
+    </div>
+
+
+    <script src="main.js"></script>
+
+	<script type="template" id="newsTemplate">
+		<h4 class="title">
+			<span class="newsName">{title}</span> <button><a href="#">X</a></button>
+		</h4>
+		<div class="newsList">
+			<img src={imgurl} alt="">
+			<ul>
+				{newsList}
+			</ul>
+		</div>
+	</script>
+    </body>
+</html>
