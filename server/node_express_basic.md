@@ -17,6 +17,8 @@ express 라는 node 모듈(프로그램)을 설치하고, 설정파일에 추가
 수 많은 관련된 모듈이 설치되었음을 확인. 여기를 직접 열어서 수정하거나 고칠일은 없음.
 여기 설치된 모듈을 소스코드에서 사용하면 됨.
 
+---
+
 #### 6. vi app.js
 ```javascript
 var express = require('express')
@@ -29,11 +31,13 @@ console.log("end of code")
 require는 모듈을 불러오는 방법. (Node_modules 에서 찾아서 노출시켜준다)
 listen의 두번째 인자는 callback 함수 (비동기로 동작)
 
+---
+
 #### 7. node app.js 로 app.js 코드 실행하면 서버가 시작됨.
 
-8 http://127.0.0.1:3000/ 로 접속해서 확인.
+#### 8 http://127.0.0.1:3000/ 로 접속해서 확인.
 
-9 Ctrl + c 로 서버종료
+#### 9 Ctrl + c 로 서버종료
 
 #### 10. 소스코드가 수정될때마다 서버를 다시 시작해야 하는 귀찮음.
 nodemon이라는 패키지(모듈)을 설치해서 사용하자.
@@ -43,6 +47,8 @@ npm install nodemon -g
 (-g는 global의 약자)
 
 #### 11.  nodemon  app.js 으로 app.js 를 실행.
+
+---
 
 #### 12. 특정 url로 받은 get 요청에 대한 처리.
 아래 코드 추가
@@ -62,6 +68,8 @@ app.get('/', function (req, res, next) {
      res.sendFile(__dirname+'/public/main.html');
 })
 ```
+
+---
 
 #### 15. main.html 에서 main.js 를 새롭게 추가해보기.
 
@@ -84,6 +92,8 @@ app.use(express.static('public'))
 main.html 안에서 img 태그로 이미지를 추가하자.
 브라우저에서 main.html을 열어서 이미지가 잘 보이는지 확인.
 
+---
+
 #### 19. 새로운 routing 하나 추가 .
 ```javascript
 app.get('/main', function (req, res, next) {
@@ -104,6 +114,8 @@ app.get('/main', function (req, res, next) {
 
 #### 22. 127.0.0.1:3000/form.html 접속해서 확인.
 
+---
+
 #### 23. get 요청을 받아서 처리할 수 있도록 app.js. 에서 새로운 라우팅조건 만들기.
 
 ```
@@ -120,11 +132,15 @@ app.get('/send_email', function(req,res,next) {
 })
 ```
 
+---
+
 #### 25. post 요청처리. 
 데이터를 얻을때는 get을 사용하고, 보낼때는 post메서드를 사용. 
 더구나 get은 데이터 보내는 길이에 제한이 있고url에 중요 정보를 노출되는 문제도 있음.
 
+```html
 <form method="post" action="/send_email">
+```
 
 #### 26. app.js 에서 routing 부분 수정.
 ```javascript
@@ -133,6 +149,8 @@ app.post('/send_email', function(req,res,next) {
      res.send("post response");
 })
 ```
+
+---
 
 #### 27. bodyParser를 활용한 post데이터처리.
 POST데이터를 받으려면 req.param으로 처리가 안되고, bodyParser 라는 별도 패키지 설치가 필요.
@@ -154,6 +172,8 @@ app.post('/send_email', function(req,res,next) {
 })
 ```
 
+---
+
 #### 30. html로 응답값도 주어보자.
 ```javascript
 app.post('/send_email', function(req,res,next) {
@@ -162,7 +182,7 @@ app.post('/send_email', function(req,res,next) {
 })
 ```
 
-31.더 복잡한 html응답을 주기 위해 데이터 + html을 결합해보자.
+### 31.더 복잡한 html응답을 주기 위해 데이터 + html을 결합해보자.
 template 작업을 도와주는 방법을 선택 (ejs라는 녀석을 사용)
 ```shell
 $ npm install ejs --save
@@ -172,6 +192,8 @@ $ npm install ejs --save
 ```shell
 app.set('view engine', 'ejs’)
 ```
+
+---
 
 #### 33. views/email.ejs 라는 template 파일 생성.
 ```html
@@ -197,6 +219,8 @@ app.set('view engine', 'ejs’)
 
 <% = email%> 부분이 나중에 치환될 문자열 부분.
 
+---
+
 #### 34. res.render 메서드로 email.ejs 파일에 데이터 포함해서 호출하기.
 ```javascript
 app.post('/send_email', function(req,res,next) {
@@ -208,6 +232,8 @@ app.post('/send_email', function(req,res,next) {
 #### 35. form 데이터를 ajax로 보내보자.
 form데이터를 보내기 위한 버튼 tag를 하나 만든다.
 <button class="ajaxsend">ajaxsend</button>
+
+---
 
 #### 36. 버튼을 누르면 ajax를 보내도록 한다.
 이때 form 데이트를 json 형태로 만들어서 보낸다.
@@ -228,6 +254,8 @@ document.querySelector('.ajaxsend').addEventListener('click',function(evt)  {
         }
 ```
 
+---
+
 #### 37. App.js 에서 응답값을 받아서 처리.
 ```javascript
 app.post('/ajax_send_email', function(req,res,next) {
@@ -243,6 +271,8 @@ app.post('/ajax_send_email', function(req,res,next) {
 })
 ```
 
+---
+
 #### 39.  MYSQL 연동 - db접속해서 데이터 추가.
 ```shell
 mysql -u root -p
@@ -257,6 +287,8 @@ insert into user (email, name, pw) values ('master@cs.com', 'jisu', '1234asdf');
 npm install mysql --save
 ```
 
+---
+
 #### 41. express 에서  mysql 연결 설정
 ``` javascript
 var mysql = require('mysql')
@@ -270,6 +302,8 @@ var connection = mysql.createConnection({
 connection.connect()
 
 ```
+
+---
 
 #### 42. query 날리고 json응답하기
 
@@ -293,17 +327,23 @@ app.post('/ajax_send_email', function(req, res){
 })
 ```
 
+---
+
 #### 43. router 부분을 모듈화하기.
+```javascript
 //app.js 에서 module을 불러오는 방법
 var main = require('./router/main')
 app.use("/main", main)
 
-//기존 라이팅코드를 주석 처리하기.
+//기존 라우팅코드는 주석 처리.
 /*
 app.get('/main', function(req,res) {
 res.sendFile(__dirname + '/public/main.html')
 });
 */
+```
+---
+
 
 #### 44. router/main.js 에서 router 정의하기.
 필요한 모듈을 설치하고 module.exports 하기
@@ -322,6 +362,7 @@ module.exports = router;
 ``` 
 
 
+---
 
 
 #참고 : 
