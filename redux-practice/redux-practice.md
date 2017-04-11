@@ -120,7 +120,6 @@ const render = () => {
 ---
 
 ### 9.완성코드 리뷰하기
-http://jsbin.com/selahih/1/edit?html,js,output
 
 ---
 
