@@ -232,21 +232,11 @@ render() {
 
 ---
 
-### 18.자식컴포넌트 생성.
+### 18.실습 : 자식컴포넌트 생성.
 li를 보여주는 부분을 자식 컴포넌트로 새롭게 만들어서 구성한다.
-```javascript
-const ListView = ({data}) => {
-    let listHTML = "";
-    if(typeof data !== "undefined") {
-      listHTML = data.map((v,i) => {
-        return <li key={i}>{v}</li>
-      });
-    }
-    return <ul>{listHTML}</ul>
-}
 
-```
+---
 
-### 19.리스트를 선택해서 삭제하는 기능을 만들어보세요.
+### 19.실습 : 리스트를 선택해서 삭제하는 기능을 만들어보세요.
 
 
