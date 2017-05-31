@@ -1,19 +1,27 @@
 
 ### 0. 준비. 라이브러리 추가.
 
-CDN을 통해서 다음의 4개 라이브러리를 추가해보자.
+CDN을 검색해서 다음의 4개 라이브러리를 추가해보자.
 react, react-dom, redux, react-redux
+
+시작코드 리뷰하기.
+http://jsbin.com/xeqaxur/1/edit?js,output
 
 ---
 
-### 1.클릭이벤트 등록
- ```javascript
-onClick={addTodo}
- ```
+### 1.준비 : 삭제관련 클릭이벤트 등록
 
+먼저 addTodo와 비슷한 기능인 deleteTodo 만들어보기.
+
+ ```javascript
+ ...
+onClick={deleteTodo}
+...
+ ```
+ 
  ---
 
-### 2.이벤트핸들러 함수 생성.
+### 2.이벤트 핸들러 함수 생성.
 Todo component 안에 다음과 같이 선언하고,
 dispatch함수를 이용해서 실행하도록 함.
 
@@ -25,11 +33,11 @@ dispatch함수를 이용해서 실행하도록 함.
       })            
   }
 ```
-store 객체를 못찾는 오류가 발생한다.
+store객체를 못찾는 오류가 발생한다.
 
 ---
 
-### 3.store 를 사용하도록 하자.  
+### 3.store를 사용하도록 하자.  
 Redux 로 부터 store 생성을 위한 createStore메서드를 불러온다
 ```javascript
 const { createStore } = Redux;
@@ -258,14 +266,44 @@ render() {
   ...
 ```
 
+--- 
+### 18.Action을 통해서 처리하게 하기.
+아래처럼 addTodo action코드 새로 생성.
+
+```javascript
+const addTodo = (todo) => ({
+   type: 'ADDTODO',
+   todo : todo
+})
+```
+mapDispatchToProps 부분은 아래처럼 변경.
+```javascript
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodo(evt) {
+        dispatch(addTodo(evt.target.previousSibling.value))
+    },
+    ...
+```
+
+deleteTodo도 위에처럼 action부분으로 분리하자.
 ---
 
-### 18. 지금까지 코드 리뷰.
-http://jsbin.com/rujamet/1/edit?js,output
+### 19. 지금까지 코드 리뷰.
+http://jsbin.com/sefaruk/1/edit?js,output
+
+---
+### 참고. shorthand mapDispatchToProps
+mapDispatchToProps 코드를 삭제하고, action을 바로 불러서 사용할 수 있다. 
+이로인해 불필요해보일 수 있는 dispatch메서드 실행을 생략할 수 있다.
+
+대신 UI Component에서 이벤트 핸들로 코드를 추가해야 한다.
+
+http://jsbin.com/matizig/1/edit?js,output
 
 ---
 
-### 19. store 전달하는 거 지워버리기.
+### 20. store 전달하는 거 지워버리기.
 아직까지 store를 전달하기 위해서 이러고 있다. 
 
 ```javascript
@@ -282,11 +320,13 @@ const TodoApp = ({store}) => {
 react-redux는 connect이외에 Provider라는 것을 제공해서 하위 컴포넌트에서 store를 쉽게 사용할 수 있게 해준다.
 (react-redux내부에서 react가 제공하는  [Context](https://facebook.github.io/react/docs/context.html#how-to-use-context)라는 기술을 사용한다. )
 
-### 20. react-redux의 Provider 사용하기.
+### 21. react-redux의 Provider 사용하기.
+ReactRedux로부터 Provider 컴포넌트를 로드하고, 
+Root component를 Provider로 감싼다.
+그리고 계속 하위 컴포넌트로 전달했던 store속성을 제거한다.
+
 ```javascript
-/* Store */
-const { createStore } = Redux;
-const store = createStore(todoReducer);
+const {connect, Provider} = ReactRedux;
 
 /* ROOT Component TodoApp */
 const TodoApp = () => {
@@ -307,4 +347,4 @@ ReactDOM.render(
 
 ```
 
-http://jsbin.com/joyojej/1/edit
+http://jsbin.com/wavohes/1/edit?js,output
