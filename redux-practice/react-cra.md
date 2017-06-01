@@ -14,7 +14,7 @@ https://github.com/facebookincubator/create-react-app
 ---
 
 ### 3. start
-시키는 대로 하자.
+가이드에서 시키는대로 해보자.
 
 ```shell
 sudo npm install -g create-react-app
@@ -44,12 +44,11 @@ index.js
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
+ReactDOM.render(<App />, document.getElementById('root'));
+registerServiceWorker();
 ```
 App.js 도 보기.
  
@@ -64,17 +63,6 @@ App.* 파일들 src/Component 디렉토리로 옮겨보기.
 
 ---
 
-### 7. Header를 분리해보기. 
-새롭게 Header 컴포넌트를 만들어보자.
-새롭게 Content 컴포넌트를 만들어보자.
-
----
-
-### 8. React 개발자 도구 설치.
-크롬개발자도구에 확장판 설치하기.
-
----
-
 ### 9. redux, react-redux 설치.
 ```shell
 npm install redux react-redux --save-dev
@@ -84,162 +72,227 @@ npm install redux react-redux --save-dev
 ### 10. redux 연동해보기.
 먼저, 지난번 redux 코드 리뷰.
 
-http://jsbin.com/joyojej/1/edit?html,js,output
+http://jsbin.com/wavohes/1/edit?js,output
 
 위 코드를 기반으로 구현해보기.
 
 ---
+### index.js 에 초기코드 추가.
 
-### 11. App.js 에 store추가해보기.
-App.js 에 store 관련된 내용부터 추가해보자.
-import 방식으로 모듈을 불러올 수 있다.
+store생성과 Provider 관련 모듈 import
+
 ```javascript
-import {connect, Provider} from 'react-redux';
+import { Provider } from 'react-redux'
 import { createStore } from 'redux';
+import todoReducer from './reducer/index';
+const store = createStore(todoReducer);
 
-const store = createStore();
+
+const render = () =>  ReactDOM.render(
+  //....
+);
+
+render();
+```
+
+--- 
+### 모듈(컴포넌트)단위로 파일 나누기.
+외부에서 ListView 를 사용할 수 있도록 export default를 사용.
+
+//1. ListView.JS
+
+```javascript
+//functional component구조에서도 React import가 필요함.
+import React from 'react';
+const ListView = ({data, onClick}) => {
+     .....
+    return (<ul>{listHTML}</ul>)
+}
+export default ListView;
+```
+
+//2. TodoContainer.js.
+//위에서 export한 모듈(컴포넌트)를 이렇게 추가해서 사용할 수 있다.
+```javascript
+import ListView from './component/ListView';
 ```
 
 ---
+### 나머지 컴포넌트도 옮겨서 구현하기
+- reducer 구현
+- App.js에 하위 컴포넌트(Header, TodoContainer) 추가
+- 나머지 필요한 ListView컴포넌트도 추가
 
-### 12. reducer 만들기.
-당연하게도 reducer가 있어야 store를 쓸 수가 있다.
-기획은 간단히 화면에 자신이 좋아하는 게임리스트를 보여준다고 가정하고 화면을 구성한다.
+---
+### 디렉토리 구성
+비슷한 역할을 하는 녀석들을 그룹지어 구성한다. 하지만 상황에 따라 서비스별로 몰아둘 수도 있음.
+src/components/ListView.js
+src/components/Header.js
+src/reducer/todo.js
+src/actions/todo.js
+각 컴포넌트에 테스트코드를 같이 위치시키는 것을 권장.
 
-- reducer는 그저 함수다. 
-- initialState를 만들어서 활용할 수 있다.
-- 역시 모듈임으로 export 를 해줘야 한다.
+---
+### 기능추가하기
+삭제한 task를 이제는 완료한 일로 묶어서 관리해두기.
+- deleteTodo 표현을 completeTodo로 변경하기.
+- todolist만 존재하는 데이터(state)에 '완료한일'도 추가하기 -> reducer에서 변경.
+  initialState를 만들고 새로운 store형태로 변경하기 
+- completeList라는 새로운 listview 하나를 만든다 (ListView와 유사하게 구현)
+
+---
+### 비동기로직 : 화면 로딩 때 Back-end에서 todolist와 completelist를 가져오기
+전략 : componentDidMount 타이밍에 Ajax요청을 보내서 데이터를 받아오자.
+
+---
+### fake API
+fakeDB/fakeInitData.js 파일에 아래 내용을 추가해서 가상의 백엔드 API하나 만들기
+```javascript
+const initDataSet = () => (
+  {
+    'todos' : ['React study', 'play game', 'clean my room'],
+    'completeList' : ['meeting']
+  }
+)
+export const fakeInitData = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(initDataSet());
+    }, 800);
+  });
+}
+```
+
+---
+### fake API를 호출해서 초기데이터 가져오기
+```javascript
+  componentDidMount() {
+    fakeInitData().then( initData => {
+      console.log(initData);
+    });
+  }
+```
+
+---
+### action에 해당하는 코드 추가. 그리고 관련 reducer부분 추가.
+mapDispatchToProps 부분에 추가한다.
+```javascript
+  setInitData(initData) {
+      dispatch({
+        ...
+      })
+    }
+```
+
+componentDidMount에서 이제 then 콜백안에서 setInitData를 호출하도록 수정.
+이후에 reducer에서 데이터 변경작업 추가.
+
+---
+### action을 별도 파일로 분리해보자
+src/action/index.js 를 생성하고 action부분을 다음처럼 구현
+```javascript
+import {fakeInitData} from '../fakeDB/fakeInitData';
+
+export const addTodo = (evt) => (
+    {
+        type: 'ADDTODO',
+        todo : evt.target.previousSibling.value
+    } 
+)
+
+export const completeTodo = (evt) => (
+    {
+        type: 'COMPLETE_TODO',
+        todo : evt.target.textContent
+    }
+)
+```
+
+---
+###  mapDispatchToProps 에서 action코드를 호출하는 것으로 수정.
 
 ```javascript
-let initialState = {
-  title : "My GameList",
-  gamelist : []
-};
-
-const contentReducer = (state = initialState, action) => {
-   
-  switch(action.type) {
-    case 'ADD_GAME':
-      return {...state, gamelist : [...state.gamelist, action.value]};
-    default: 
-      return state;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodo(evt) {
+        dispatch(actions.addTodo(evt))
+    },
+    completeTodo(evt) {
+        dispatch(actions.completeTodo(evt)) 
+    }
   }
 }
-
-export default contentReducer;
 ```
 
 ---
+### async action은 어떻게 처리해야 할까? 
+dispatch를 실행시키기 위해서는 객체형태의 결과를 담아줘야 한다. 
+action에서 async처리를 하기 위해서는 어떠한 객체형태를 반환해야 한다.
 
-### 13. store 전달하기 위한 Provider등록
+이런식으로 처리해야 한다.
 ```javascript
-return (
-  <Provider store={store}>
-    <div className="App">
-      <Header />
-      <Content />
-    </div>
-  </Provider>
-);	
+    ...
+    getInitData() {
+      dispatch(actions.getInitData(dispatch))
+    }
+    ...
+```
+getInitData는 비동기로 동작한다. 그리고 동작 이후에 그 결과를 reducer에 전달하기 위해 또 다른 dispatch를 실행해야 한다. 
+이처럼 getInitData는 다른 액션과 달리 객체를 반환할 수 없다.
+또한 처리 결과에 따라서 새로운 action 메서드를 실행해줘야 한다.
+이처럼 비동기 로직의 action처리는 다른것과 다른처리가 필요로 한다.
+
+redux-thunk 와 같은 모듈을 이용해서 비동기 처리를 돕는 것을 사용해야 한다.
+https://github.com/gaearon/redux-thunk
+
+---
+### redux-thunk로 async 처리하기
+redux-thunk라는 모듈을 사용해서 비동기 처리를 하면, action코드를 다음과 같이 작성할 수 있고, 
+redux구조에서도 비동기 처리를 자연스럽게 구현할 수 있다. 
+
+```
+//action.js
+export const getInitData = (dispatch) => {
+    //redux-thunk 를 사용하기 때문에 함수로 작성하고 이를 반환한다.
+  return (dispatch) => { 
+        fakeInitData().then( (initData) => {
+          //후속 action처리를 할 수 있다.
+          dispatch(setInitData(initData));
+        });
+  };
+}
+
+//TodoContainer.js mapDispatchToProps에서 실행하는 dispatch실행은 다른 것과 유사하다.
+  getInitData() {
+    dispatch(actions.getInitData(dispatch))
+  }
 ```
 
 ---
-
-### 14.redux의 store정보가 필요한 컴포넌트에 connect 로 연결지어주기.
-mapStateToProps, mapDispatchToProps 를 설정하지 않고 
-우선 connect연결만해보자.
+###  mapDispatchToProps 전체코드. 
 
 ```javascript
-...
-import { createStore } from 'redux';
-const store = createStore(contentReducer);
-
-//이렇게!
-const ContentContainer = connect()(Content);
-
-...
-
-<Provider store={store}>
-  <div className="App">
-    <Header />
-    <ContentContainer/>
-  </div>
-</Provider>
-```
-이렇게 연결만해도 dispatch 함수를 전달해서 UI Component에서 사용할 수가 있다.
-
----
-
-### 15. dispatch의 사용.
-Provider와 connect덕분에 잘 전달받은 dispatch함수를 UI Component에서 사용할 수 있다.
-```javascript
-//Component/Content.js
-class  Content extends Component {
-  render() {
-  	const {dispatch} = this.props;
-    return (
-      <div>
-      	<p> My content is null...-_- </p>
-      </div>
-    );
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodo(evt) {
+        dispatch(actions.addTodo(evt))
+    },
+    completeTodo(evt) {
+        dispatch(actions.completeTodo(evt)) 
+    },
+    getInitData() {
+      dispatch(actions.getInitData(dispatch))
+    }
   }
 }
 ```
 
 ---
-
-### 16. 버튼 하나 만들고 onClick 핸들러 만들기.
-핸들러 완성 이후에, dispatch적용하기.
-
-잘되는지 확인하려면 reducer에서 action을 출력해보자.
-
----
-
-### 17. store의 state를 받아보자.
-mapStateToProps를 통해서 컴포넌트에 state값을 전달해보자.
-
-```javascript
-const mapStateToProps = (state) => {
-  return state;
-}
-```
-
-UI Component에서는 이렇게 props로 전달받아서 사용가능하다.
-```javascript
-let {title, gamelist} = this.props;
-let gamelistJSX = gamelist.map((value, i) => {
-  return <li key={i}> {value} </li>
-});
-```
+### 더 고민할 것들..
+- 초기 로딩시에 loading... 메시지를 표현하는 방법은 무엇일까? 
+- redux-router 를 사용한 navigation 기능 추가
+- 인증, SPA에서는 jwt와 같은 토큰기반 인증방식과 어울림. 특정 API호출시에만 인증과정을 거치도록 구현.
 
 ---
-
-### 18. 어떤 부분이 리팩토링이 필요할까? 
-AppUIRoot 를 새로 만들고 App.js를 좀 깨끗이 정리하자. 
-```
-class App extends Component {
-  render() {
-    return (
-      <Provider store={store}>
-        <AppUIRoot />
-      </Provider>
-    );
-  }
-}
-```
-
----
-
-### 19. dispatch를 UI Component에서 분리하자.
-AppUIRoot.js로 옮기고, 
-Component/Content.js 는 정리하고.
-
-그리고,
-Content.js를 functional component로 바꿔서 간단하게 렌더링 되도록하자.
-이렇게 하면 component 의 life cycle을 생략할 수 있다.
-
----
-
-### 20 ..
-[.](https://github.com/nigayo/_cra_base_small_step)
-
+### 8. React 개발자 도구 설치
+디버깅을 위해서 크롬개발자도구에 확장판 설치하기.
