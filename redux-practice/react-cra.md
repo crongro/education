@@ -302,6 +302,10 @@ const mapDispatchToProps = (dispatch) => {
 ```
 
 ---
+### Codes.
+지금까지 : https://github.com/nigayo/react_redux_cra_example
+
+---
 ### 24. 그밖에 비동기처리시 고려할 점.
 - 초기 데이터를 로드하기전에 보여줘야 할 'loading... 중' 이라는 메시지 노출.
 - 에러처리
