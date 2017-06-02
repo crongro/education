@@ -5,25 +5,24 @@ CDN을 검색해서 다음의 4개 라이브러리를 추가해보자.
 react, react-dom, redux, react-redux
 
 시작코드 리뷰하기.
-http://jsbin.com/xeqaxur/1/edit?js,output
+http://jsbin.com/cisoji/1/edit?js,output
+
+이 코드를 jsbin에서 clone한다. (가급적 계정도 하나 만든다.)
 
 ---
 
-### 1.준비 : 삭제관련 클릭이벤트 등록
+### 1.준비 : 단계별로 코드 추가
 
-먼저 addTodo와 비슷한 기능인 deleteTodo 만들어보기.
-
- ```javascript
- ...
-onClick={deleteTodo}
-...
- ```
+action을 dispatch에 담아서 전달하고,
+전달받은 action에 의해서 데이터 변경을 하기위해, reducer만들기.
  
  ---
 
 ### 2.이벤트 핸들러 함수 생성.
+기존 addTodo 이벤트핸들러를 제거하고 아래처럼 변경.
 Todo component 안에 다음과 같이 선언하고,
 dispatch함수를 이용해서 실행하도록 함.
+
 
 ```javascript
   addTodo(evt) {
@@ -48,6 +47,8 @@ const store = createStore(todoReducer);
 ---
 
 ### 4.reducer 를 만들자.
+아래처럼 reducer에서 정의한 state가 서비스에서 활용하는 데이터 값이다.
+
 ```javascript
 const todoReducer = (state = [], action) => {
   console.log(state, action);
@@ -73,9 +74,8 @@ getState를 통해서 정보를 받아서 컴포넌트에 넣어주자.
 ### 6.subscribe에 render 함수 등록.
 ```javascript
 const render = () => {
-  console.log("render called");
   ReactDOM.render(
-    <Todo />, document.querySelector("#wrap")
+    <TodoApp />, document.querySelector("#wrap")
   );
 };
 
@@ -88,41 +88,36 @@ render();
 ---
 
 ### 7.getState()를 통해서 컴포넌트에 데이터 주입.
+지금까지 하면 변경된 데이터를 필요한 컴포넌트에서 가져와야 한다.
+store객체의 getState()메서드를 통해서 가져올 수 있다
+.
 ```javascript
 const render = () => {
-  console.log("render called");
   ReactDOM.render(
-    <Todo data={store.getState()} />, document.querySelector("#wrap")
+    <TodoApp data={store.getState()} />, document.querySelector("#wrap")
   );
 };
 ```
 ---
 
 ### 8.props를 통해서 컴포넌트에서 데이터에 따른 뷰처리.
+props로 필요한 데이터를 받아서 처리하도록 Component를 수정.
 ```javascript
   render() {
-    let data = this.props.data;
-    let listHTML = "";
-    
-    if(typeof data !== "undefined") {
-      listHTML = data.map((v,i) => {
-        return <li key={i}>{v}</li>
-      });
-    }
+    let {data, addTodo} = this.props;
     
     return (
       <div>
         <div>
          <input type="text" placeholder="할일입력" />
-         <button onClick={this.addTodo}> 추가 </button>
+         <button onClick={this.addTodo.bind(this)}> 추가 </button>
         </div>
         <div>
-          {listHTML}
+          <ListView data={data} />
         </div>
       </div>
     )
   }
-}
 ```
 
 ---
@@ -153,8 +148,37 @@ store값을 쉽게 구독해서 값을 받아서 하위 컴포넌트에 전달�
 store.dispatch 메서드를 하위컴포넌트밖에서 정의해서 사용할 수 있도록 mapDispatchToProps 함수를 사용한다.
 
 ---
+### 12. subscripb, getState코드제거.
+subscribe와 getState를 직접하지 않고, 대신 store객체를 컴포넌트에 전달해준다.
+```javascript
+/* ROOT Component TodoApp */
 
-### 12. connect에 필요한 mapStateToProps 함수 구현.
+const TodoApp = (props) => {
+  return (
+      <div>
+        <Header />
+        <Todo store={props.store}/>
+      </div>
+    )
+}
+
+const render = () => {
+  ReactDOM.render(
+    <TodoApp store={store} />,
+   document.querySelector("#wrap")
+  );
+};
+
+//store가 변경되면 view component를 다시 렌더링하도록 등록.
+//store.subscribe(render);
+
+//rendering 처음 실시
+render();
+
+```
+
+### 13. connect에 필요한 mapStateToProps 함수 구현.
+TodoContainer를 새롭게 만들고, state값을 props형태로 Todo에 추가해주는 작업을 해준다.
 mapStateToProps 메서드는 props에 상태값(store에 저장된 값)을 매핑한다라고 이해하면 쉽다.
 
 ```javascript
@@ -173,47 +197,25 @@ const TodoContainer = connect(
 )(Todo);
 
 //render부분에서는 Todo가 아닌 TodoContainer를 렌더링하게 설정.
-const TodoApp = () => {
+const TodoApp = (props) => {
   return (
-    <div>
-      <Header />
-      <TodoContainer />
-    </div>
-  )
-}
-```
-
----
-
-### 13. Todo 컴포넌트에서의 data 접근확인.
-
-```javascript
-this.props를 통해서 바로 전달받았음.
-하위컴포넌트에도 이렇게 전달.
-
-class Todo extends React.Component {
-  
-  render() {
-    let {data} = this.props;
-    
-    return (
       <div>
-        <div>
-         <input type="text" placeholder="할일입력" />
-         <button onClick={addTodo}> 추가 </button>
-        </div>
-        <div>
-          <ListView data={data} onClick={deleteTodo} />
-        </div>
+        <Header />
+        <TodoContainer store={props.store}/>
       </div>
     )
-  }
 }
+
 ```
 
 ---
 
-### 14.dispatch 부분 분리하기.
+### 14. Todo 컴포넌트에서의 data 접근확인.
+Todo 앱에서는 data를 잘 전달받아서 수정없이 그대로 사용가능.
+
+---
+
+### 15.dispatch 부분 분리하기.
 컴포넌트에 존재하고 있는 아래 코드를(action을 실행하는) 컴포넌트 밖으로 분리해보자.
 ```javascript
   addTodo(evt) {
@@ -225,7 +227,7 @@ class Todo extends React.Component {
 ```
 ---
 
-### 15.dispatch 분리하기.
+### 16.dispatch 분리하기.
 dispatch로 store객체를 통해서 사용해야 하는데, UI Component에서 store객체를 직접받아서 쓰지 말고, 
 상위에서 처리하도록 하기 위해 분리한다. UI Component 에서는 store의 의존성도 없어진다.
 connect메서드를 활용해서 store의 state값을 UI Component에서 쉽게 전달받았듯이 dispatch도 비슷하게 처리할 수 있다.
@@ -234,18 +236,19 @@ connect메서드를 활용해서 store의 state값을 UI Component에서 쉽게 
 const mapDispatchToProps = (dispatch) => {
   return {
     addTodo(evt) {
-        dispatch({
-          type: 'ADDTODO',
-          todo : evt.target.previousSibling.value
-        }) 
+      dispatch({
+        type: 'ADDTODO',
+        todo : evt.target.previousSibling.value
+      })            
     }
   }
 }
+
 ```
 
 ---
 
-### 16.dispatch 분리하기.
+### 17.dispatch 분리하기.
 connect 함수의 두번째 인자로 mapDispatchToProps함수를 추가한다.
 ```javascript
 const TodoContainer = connect(
@@ -256,19 +259,20 @@ const TodoContainer = connect(
 
 ---
 
-### 17.컴포넌트에서 addTodo 이벤트 핸들러를 삭제.
-props 를 통해서 이벤트 핸들러를 받을 수 있으니, 다음과 같이 처리.
+### 18.컴포넌트에서 addTodo 이벤트 핸들러를 삭제.
+props 를 통해서 이벤트 핸들러를 받을 수 있으니, 다음과 같이 props로부터 addTodo를 받아서 처리.
 
 ```javascript
 render() {
   let {data, addTodo} = this.props;
-  let listHTML = "";
   ...
 ```
 
 --- 
-### 18.Action을 통해서 처리하게 하기.
-아래처럼 addTodo action코드 새로 생성.
+### 19.Action 함수를 별도로 분리.
+Action부분을 분리해서 따로 함수로 만들자.
+이렇게 되면 dispatch안에 있던 코드가 별도로 분리된다.
+많은 action을 이렇게 몰아서 별도의 소스파일로 관리하면 좋다.
 
 ```javascript
 const addTodo = (todo) => ({
@@ -276,21 +280,21 @@ const addTodo = (todo) => ({
    todo : todo
 })
 ```
+
 mapDispatchToProps 부분은 아래처럼 변경.
 ```javascript
 const mapDispatchToProps = (dispatch) => {
   return {
     addTodo(evt) {
-        dispatch(addTodo(evt.target.previousSibling.value))
-    },
-    ...
+      dispatch(addTodo(evt.target.previousSibling.value))
+     }          
+  }
+}
 ```
-
-deleteTodo도 위에처럼 action부분으로 분리하자.
 ---
 
-### 19. 지금까지 코드 리뷰.
-http://jsbin.com/sefaruk/1/edit?js,output
+### 20. 지금까지 코드 리뷰.
+http://jsbin.com/vebixez/1/edit?js,output
 
 ---
 ### 참고. shorthand mapDispatchToProps
@@ -303,7 +307,7 @@ http://jsbin.com/matizig/1/edit?js,output
 
 ---
 
-### 20. store 전달하는 거 지워버리기.
+### 21. store 전달하는 거 지워버리기.
 아직까지 store를 전달하기 위해서 이러고 있다. 
 
 ```javascript
@@ -320,7 +324,7 @@ const TodoApp = ({store}) => {
 react-redux는 connect이외에 Provider라는 것을 제공해서 하위 컴포넌트에서 store를 쉽게 사용할 수 있게 해준다.
 (react-redux내부에서 react가 제공하는  [Context](https://facebook.github.io/react/docs/context.html#how-to-use-context)라는 기술을 사용한다. )
 
-### 21. react-redux의 Provider 사용하기.
+### 22. react-redux의 Provider 사용하기.
 ReactRedux로부터 Provider 컴포넌트를 로드하고, 
 Root component를 Provider로 감싼다.
 그리고 계속 하위 컴포넌트로 전달했던 store속성을 제거한다.
@@ -331,20 +335,28 @@ const {connect, Provider} = ReactRedux;
 /* ROOT Component TodoApp */
 const TodoApp = () => {
   return (
-    <div>
-      <Header />
-      <TodoContainer />
-    </div>
-  )
+      <div>
+        <Header />
+        <TodoContainer />
+      </div>
+    )
 }
 
-ReactDOM.render(
-  <Provider store={store}>
-   <TodoApp />,
-  </Provider>
- document.querySelector("#wrap")
-);
+const render = () => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <TodoApp />
+    </Provider>,
+   document.querySelector("#wrap")
+  );
+};
+
 
 ```
+http://jsbin.com/qaqivu/1/edit?js,output
 
-http://jsbin.com/wavohes/1/edit?js,output
+### 추가기능도전 : 삭제관련 클릭이벤트 등록
+
+먼저 addTodo와 비슷한 기능인 deleteTodo 만들어보기.
+
+최종 : http://jsbin.com/volerab/1/edit?js,output
