@@ -72,7 +72,7 @@ npm install redux react-redux --save-dev
 ### 8. redux 연동해보기.
 먼저, 지난번 redux 코드 리뷰.
 
-http://jsbin.com/wavohes/1/edit?js,output
+http://jsbin.com/volerab/1/edit?js
 
 위 코드를 기반으로 구현해보기.
 
